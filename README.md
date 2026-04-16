@@ -1,4 +1,3 @@
-<img width="606" height="456" alt="predicted_vs_actual" src="https://github.com/user-attachments/assets/99650cfe-cc93-44e1-b306-4b03b673fe37" />
 # Resume Scoring Using BERT-Based Regression
 
 A fine-tuned transformer model for automated résumé evaluation — achieving **R² = 0.993** and **MAE ≈ 1.38** on a held-out test set of 1,000 résumés.
