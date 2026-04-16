@@ -1,3 +1,4 @@
+<img width="606" height="456" alt="predicted_vs_actual" src="https://github.com/user-attachments/assets/99650cfe-cc93-44e1-b306-4b03b673fe37" />
 # Resume Scoring Using BERT-Based Regression
 
 A fine-tuned transformer model for automated résumé evaluation — achieving **R² = 0.993** and **MAE ≈ 1.38** on a held-out test set of 1,000 résumés.
@@ -30,13 +31,13 @@ The system is designed to support large-scale candidate screening with consisten
 
 Strong linear alignment across the full score range with no systematic over- or underestimation.
 
-![Predicted vs Actual](assets/predicted_vs_actual.png)
+<img width="606" height="456" alt="predicted_vs_actual" src="https://github.com/user-attachments/assets/421bca42-a571-4355-955e-1a4d2ce2a1ed" />
 
 ### Sample-wise Prediction Comparison (First 50 Test Samples)
 
 Low error variance and stable generalisation across individual samples, consistent with the RMSE and MAE values reported.
 
-![Sample-wise Comparison](assets/sample_prediction_comparison.png)
+<img width="607" height="361" alt="sample_prediction_comparison" src="https://github.com/user-attachments/assets/cf2e9d7e-e913-4ed6-b1d6-ca38c00507d0" />
 
 ---
 
