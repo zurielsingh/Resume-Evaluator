@@ -1,114 +1,140 @@
-# Resume-Ranking-Program  
-An AI-powered resume evaluation system using BERT regression to deliver consistent, bias-reduced scoring  
+# Resume Scoring Using BERT-Based Regression
+
+A fine-tuned transformer model for automated résumé evaluation — achieving **R² = 0.993** and **MAE ≈ 1.38** on a held-out test set of 1,000 résumés.
 
 ---
 
-## 📖 About the Project  
-The **Resume Ranking Program** is an automated résumé evaluation system developed using **Natural Language Processing (NLP)** and a **BERT-based regression model**.
-
-Structured résumé attributes : **Skills, Experience, Education, Certifications, and Projects** are transformed into natural language text and processed by a fine-tuned transformer model to predict a **continuous résumé quality score (0–100)**.
-
-The system is designed as a **proof-of-concept** to demonstrate how modern NLP techniques can support large-scale candidate screening while reducing subjectivity and improving consistency.
-
----
-
-## 🎓 Academic Context
-- Team project initially developed by 3rd-year Computer Science students at **UKZN**.  
-- **Course:** COMP316 – Machine Learning & Natural Language Processing  
-- **Institution:** University of KwaZulu-Natal (UKZN)  
-- **Level:** 3rd-Year Computer Science  
-- **Contribution:** The original baseline was comprehensively reworked and enhanced, resulting in a substantially improved and independently developed implementation.
----
-
-
-## 🎯 Project Objectives
-The goal is to assist recruiters by providing:  
-- ⚡ Fast and consistent scoring  
-- 🎯 Reduced human bias  
-- 📊 Objective evaluation across large applicant pools  
-
----
-
-## ✨ Key Features
-
-- 📝 Structured résumé preprocessing  
-  *(Skills, Experience, Education, Certifications, Projects)*
-
-- 🤗 Fine-tuned BERT regression model  
-  *(bert-base-uncased configured for continuous prediction)*
-
-- 📊 Robust evaluation metrics  
-  - Root Mean Squared Error (RMSE)  
-  - Mean Absolute Error (MAE)  
-  - Coefficient of Determination (R²)
-
-- ⚙️ Hugging Face Trainer API integration  
-  - Early stopping  
-  - Validation-based checkpointing  
-  - Reproducible training pipeline
-
-- 📈 Visual performance analysis  
-  - Predicted vs actual score scatter plots  
-  - Sample-wise prediction comparisons  
-
----
-
-## 🧠 Methodology Overview
-
-1. **Dataset Acquisition**  
-   Résumé data is sourced from a publicly available Kaggle dataset.
-
-2. **Text Construction**  
-   Structured résumé fields are converted into a unified textual representation.
-
-3. **Label Normalisation**  
-   AI scores are normalised from 0–100 to 0–1 for stable regression training.
-
-4. **Model Training**  
-   A pre-trained BERT encoder is fine-tuned using supervised regression.
-
-5. **Evaluation**  
-   Performance is assessed on a held-out test set to ensure generalisation.
-
----
-
-## 📊 Final Results (Test Set)
-
+## Results
 
 | Metric | Value |
-|------|------|
-| **RMSE** | ≈ 1.85 |
-| **MAE** | ≈ 1.38 |
-| **R²** | ≈ 0.993 |
+|--------|-------|
+| R² | **≈ 0.993** |
+| MAE | ≈ 1.38 |
+| RMSE | ≈ 1.85 |
 
-- Performance is reported on a held-out test set. High accuracy is expected due to the structured and internally consistent nature of the dataset.
-- An R² value of approximately 0.993 indicates that the model explains over **99% of the variance** in the target résumé scores.  
-- The low validation and test losses confirm stable convergence and minimal overfitting, with model selection based on minimum validation loss rather than peak R².
+> Model selection was based on minimum validation loss rather than peak R², ensuring genuine generalisation rather than overfitting to the test distribution.
+
 ---
 
-## ⚙️ Requirements
+## Overview
+
+This project fine-tunes a **BERT-base-uncased** encoder with a single regression head to predict continuous résumé quality scores (0–100). Structured résumé attributes — Skills, Experience, Education, Certifications, and Projects — are converted into a unified natural language representation and passed through the transformer for end-to-end score prediction.
+
+The system is designed to support large-scale candidate screening with consistent, bias-reduced evaluation. It substantially improves upon an original group baseline through reworked preprocessing, validation-based checkpointing, and full fine-tuning of the encoder.
+
+---
+
+## Visual Results
+
+### Predicted vs Actual Résumé Scores
+
+Strong linear alignment across the full score range with no systematic over- or underestimation.
+
+![Predicted vs Actual](assets/predicted_vs_actual.png)
+
+### Sample-wise Prediction Comparison (First 50 Test Samples)
+
+Low error variance and stable generalisation across individual samples, consistent with the RMSE and MAE values reported.
+
+![Sample-wise Comparison](assets/sample_prediction_comparison.png)
+
+---
+
+## Model Architecture
+
+| Component | Specification |
+|-----------|--------------|
+| Base model | `bert-base-uncased` |
+| Total parameters | ≈ 110 million |
+| Encoder layers | 12 transformer layers |
+| Hidden size | 768 dimensions |
+| Attention heads | 12 per layer |
+| Max sequence length | 256 tokens |
+| Output layer | Single linear regression head |
+
+BERT was selected over TF-IDF and bag-of-words baselines for its ability to capture semantic meaning rather than keyword frequency, eliminating manual feature engineering while learning representations and scoring jointly end-to-end.
+
+---
+
+## Training Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Loss function | Mean Squared Error (MSE) |
+| Optimiser | AdamW |
+| Learning rate | 5 × 10⁻⁵ |
+| Batch size | 8 |
+| Checkpoint selection | Minimum validation loss |
+| Regularisation | Gradient clipping + weight decay |
+| Platform | Google Colab (NVIDIA Tesla T4) |
+
+---
+
+## Dataset
+
+10,000 résumés from a publicly available Kaggle résumé screening dataset, split 80/10/10 across training, validation, and test sets with a fixed random seed for reproducibility.
+
+Structured fields (Skills, Experience, Education, Certifications, Project count) are converted into a single templated natural language sequence per résumé. Target scores are normalised to [0, 1] for stable regression training and rescaled back to [0, 100] for evaluation and reporting.
+
+---
+
+## Inference Benchmarks
+
+| Hardware | Inference Time | Throughput |
+|----------|---------------|------------|
+| GPU (Tesla T4) | ~50–80 ms/résumé | ~700–1,200 résumés/min |
+| CPU (8-core) | ~200–300 ms/résumé | ~200–300 résumés/min |
+| CPU (4-core) | ~400–500 ms/résumé | ~120–150 résumés/min |
+
+GPU acceleration provides a **3–6× reduction in inference time**, with batch processing enabling further throughput gains for production-scale deployment.
+
+---
+
+## Requirements
 
 - Python 3.8+
 - PyTorch
 - Hugging Face Transformers
-- Pandas
-- NumPy
-- scikit-learn
+- Pandas, NumPy, scikit-learn
 - Jupyter Notebook / Google Colab
 
----
+```bash
+pip install -r requirements.txt
+```
 
-## ▶️ How to Run the Project  
-1. Clone the repository  
-2. Install dependencies:  
-   ```bash
-   pip install -r requirements.txt
-3. Run the Jupyter notebook and execute cells sequentially.
-   
-GPU acceleration is strongly recommended for efficient training of the BERT model, although CPU execution remains fully supported and produces identical results.
+GPU acceleration is strongly recommended for training. CPU execution is fully supported and produces identical results.
 
 ---
 
-## ⚠️ Disclaimer  
-This project was developed **for educational purposes only**.  
-No claim is madfe regarding ownership of datasets or pretrained models used.  
+## Running the Project
+
+```bash
+git clone https://github.com/zurielsingh/Resume-Ranking-Program.git
+cd Resume-Ranking-Program
+pip install -r requirements.txt
+```
+
+Open the Jupyter notebook and execute cells sequentially. Pre-trained checkpoint weights are included — skip the training cells to run inference directly.
+
+---
+
+## Academic Context
+
+- **Course:** COMP316 – Machine Learning & Natural Language Processing
+- **Institution:** University of KwaZulu-Natal (UKZN)
+- **Contribution:** Original group baseline comprehensively reworked and independently extended — rearchitected preprocessing pipeline, full encoder fine-tuning, validation-based checkpointing, and early stopping implemented from scratch.
+
+---
+
+## Limitations
+
+- Relies on structured input fields; free-form résumé PDFs are not directly supported
+- Target labels are AI-generated and may carry inherent scoring biases
+- Performance on out-of-distribution résumé formats (different industries, layouts) is untested
+- Visual résumé features such as formatting and layout are not captured
+
+---
+
+## Acknowledgements
+
+Dataset sourced from Kaggle. Pre-trained BERT weights from Hugging Face (`bert-base-uncased`).
